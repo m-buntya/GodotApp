@@ -1,0 +1,72 @@
+[gd_scene load_steps=10 format=3 uid="uid://lkkoxx108aiy"]
+
+[ext_resource type="Script" path="res://player.gd" id="1_wis3i"]
+[ext_resource type="Texture2D" uid="uid://c8fwmd680hem6" path="res://assets/image/ships/ship_0002.png" id="1_wu1ps"]
+[ext_resource type="Texture2D" uid="uid://bdfdkpx1ybssj" path="res://assets/image/tiles/tile_0004.png" id="2_ijkyy"]
+[ext_resource type="Texture2D" uid="uid://d012k3b5mbfco" path="res://assets/image/tiles/tile_0005.png" id="3_sk487"]
+[ext_resource type="Texture2D" uid="uid://d1d8ykmhtvb06" path="res://assets/image/tiles/tile_0006.png" id="4_ohhi3"]
+[ext_resource type="Texture2D" uid="uid://rh08b53i02d3" path="res://assets/image/tiles/tile_0007.png" id="5_omhum"]
+[ext_resource type="Texture2D" uid="uid://c4kwsieq84cs8" path="res://assets/image/tiles/tile_0008.png" id="6_ruc3h"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_43gtl"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_wu1ps")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_ijkyy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_sk487")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_ohhi3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_omhum")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_ruc3h")
+}],
+"loop": false,
+"name": &"explode",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_enc0e"]
+size = Vector2(22, 10)
+
+[node name="Player" type="Area2D" node_paths=PackedStringArray("n_shadow", "n_anim", "n_shot_disable_timer")]
+script = ExtResource("1_wis3i")
+n_shadow = NodePath("Sprite2D")
+n_anim = NodePath("AnimatedSprite2D")
+n_shot_disable_timer = NodePath("ShotDisableTimer")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0, 0, 0, 0.372549)
+position = Vector2(3, 3)
+texture = ExtResource("1_wu1ps")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_43gtl")
+animation = &"explode"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_enc0e")
+
+[node name="ShotDisableTimer" type="Timer" parent="."]
+wait_time = 0.7
+one_shot = true
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(0, -100)
+limit_left = -20
+limit_right = 340
+position_smoothing_enabled = true
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]
+[connection signal="animation_finished" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]
+[connection signal="timeout" from="ShotDisableTimer" to="." method="_on_shot_disable_timer_timeout"]
